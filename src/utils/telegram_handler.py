@@ -4,10 +4,13 @@ import asyncio
 """
 Telegram Messaging Helper
 
-This module provides functions to send messages, photos, documents, and videos to a Telegram channel using the Telethon library.
+This module provides functions to send messages, photos, documents, 
+and videos to a Telegram channel using the Telethon library.
 
 Background:
-Telegram is a popular messaging app that is widely used for communication and sharing media. In this tutorial, we will learn how to use Python to send messages to a Telegram channel using the Telethon library.
+Telegram is a popular messaging app that is widely used for communication 
+and sharing media. In this tutorial, we will learn how to use Python to send 
+messages to a Telegram channel using the Telethon library.
 """
 
 # Replace these with your actual values

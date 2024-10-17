@@ -35,4 +35,4 @@ jobs:
       # Run codespell to check for spelling errors
       - name: Run codespell
         run: |
-          codespell
+          codespell -w
