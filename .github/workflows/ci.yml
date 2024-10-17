@@ -25,7 +25,7 @@ jobs:
       # Run Black to check Python formatting
       - name: Run black
         run: |
-          black --check .
+          black .
 
       # Run flake8 to lint Python code
       - name: Run flake8
@@ -36,13 +36,3 @@ jobs:
       - name: Run codespell
         run: |
           codespell
-
-      # Auto-fix formatting with black if there are issues
-      - name: Auto-fix formatting with black
-        if: failure() # Run only if the formatting check fails
-        run: |
-          black .
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -am "Auto-format code with black" || echo "No changes to commit"
-          git push
