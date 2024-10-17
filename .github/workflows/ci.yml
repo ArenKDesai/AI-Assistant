@@ -1,0 +1,38 @@
+name: Python CI/CL
+
+on: [push, pull_request]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install black flake8 codespell
+
+      # Run Black to check Python formatting
+      - name: Run black
+        run: |
+          black --check .
+
+      # Run flake8 to lint Python code
+      - name: Run flake8
+        run: |
+          flake8 .
+
+      # Run codespell to check for spelling errors
+      - name: Run codespell
+        run: |
+          codespell
