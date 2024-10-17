@@ -4,6 +4,7 @@ Zach Gunderson and Aren Desai attempt to make AGI.
 ## File Structure
 Use gpt to help format this
 
+```
 ai_assistant/
 ├── data/
 │   ├── raw/
@@ -32,8 +33,10 @@ ai_assistant/
 │   └── test_bot.py
 ├── requirements.txt
 └── README.md
+```
 
 ## Classes
+```
 Agent (Generic)
     └── Schedules (Queue of Tasks)
     └── Read with purpose (Prompt)
@@ -62,7 +65,7 @@ Agent-Team
                 ~example 2~ Idea: LED controller for Guitar Amps for Aren, Subject:  Friend Gift Ideas
         └── Agent-School
             └── Tracks Canvas Assignments and gives reminders on uncompleted stuff and upcoming schedules
-
+```
 ## CI/CL
 I added in Continuous Integration (CI) and Continuous Linting (CL) to keep our code less error prone during this project. It's nice to do this since it's a group project.
 
