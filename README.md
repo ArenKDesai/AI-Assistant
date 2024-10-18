@@ -14,3 +14,4 @@ python3 -m grpc_tools.protoc -I=. --python_out=. --grpc_p^Chon_out=. llm.proto
 ```
 
 The outputs, ```llm_pb2_grpc.py``` and ```llm_pb2.py```, are placed in the ```server``` directory, but also are needed wherever a client needs to communicate with the server. 
+In the ```server``` directory contains a Dockerfile, which can be spun up and queried on port ```5440``` with gRPC for the LLM responses. 
