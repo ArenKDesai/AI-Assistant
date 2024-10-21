@@ -1,5 +1,7 @@
-import telethon
+from telethon.sync import TelegramClient, events
 import asyncio
+import os
+from dotenv import load_dotenv
 
 """
 Telegram Messaging Helper
