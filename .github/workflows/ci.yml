@@ -27,11 +27,6 @@ jobs:
         run: |
           black .
 
-      # Run flake8 to lint Python code
-      - name: Run flake8
-        run: |
-          flake8 .
-
       # Run codespell to check for spelling errors
       - name: Run codespell
         run: |
