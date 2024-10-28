@@ -3,6 +3,9 @@ import os
 from dotenv import load_dotenv
 import logging
 from pathlib import Path
+import queue
+import grpc
+from concurrent import futures
 
 
 """
@@ -30,6 +33,9 @@ bot_token = os.getenv('BOT_TOKEN')
 # Create a new client instance for the bot
 client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
 
+# Create a queue for messages
+message_queue = queue.Queue()
+
 @client.on(events.NewMessage(pattern='/start'))
 async def start(event):
     await event.respond('Hello! I am a Telethon bot. How can I assist you today?')
@@ -38,6 +44,9 @@ async def start(event):
 @client.on(events.NewMessage)
 async def keyword_responder(event):
     message = event.text.lower()
+
+    # Enqueue the message for processing by the bot/agent
+    message_queue.put(message)
 
     responses = {
         'hello': 'Hi there! How can I help you today?',
