@@ -1,0 +1,5 @@
+.env
+anon.session
+bot.session
+bot_session.session
+venv/
