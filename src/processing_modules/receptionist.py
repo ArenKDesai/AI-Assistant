@@ -3,9 +3,11 @@ import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import inspect
 import json
+import sys
+from jsonformer import Jsonformer
 
 class FunctionCallingLLM:
-    def __init__(self, model_name="google/gemma-2-2b"):
+    def __init__(self, model_name="google/gemma-2-2b-it"):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
         self.available_functions = {}
@@ -37,33 +39,49 @@ class FunctionCallingLLM:
         full_prompt = (
             self.generate_function_context() + 
             "\nUser request: " + user_prompt + 
-            "\nResponse format: {'function': 'function_name', 'args': {arg_dict}}"
+            "\nResponse format: {'function': 'function_name', 'args': [args_array]}"
         )
         
         # Generate response from model
-        inputs = self.tokenizer(full_prompt, return_tensors="pt")
-        outputs = self.model.generate(
-            inputs.input_ids,
-            max_length=200,
-            pad_token_id=self.tokenizer.eos_token_id
-        )
-        response = self.tokenizer.decode(outputs[0])
-        print(type(response))
-        print(response)
+        # inputs = self.tokenizer(full_prompt, return_tensors="pt")
+        # outputs = self.model.generate(
+        #     inputs.input_ids,
+        #     max_length=200,
+        #     pad_token_id=self.tokenizer.eos_token_id
+        # )
+        # response = self.tokenizer.decode(outputs[0])
+        # clean_response = response[len(full_prompt):].lstrip()
+        
+        json_schema = {
+            "type": "object",
+            "properties": {
+                "function": {"type": "string"},
+                "args": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
+        }
+        jsonformer = Jsonformer(self.model, self.tokenizer, json_schema, full_prompt)
+        generated_data = jsonformer()
+
+        print ("\n FULL PROMPT")
+        print(full_prompt)
+        print("\n")
+        print("\n RESPONSE")
+        print(generated_data)
         
         try:
             # Parse the model's response to get function name and arguments
-            print('checkpoint 1')
-            response_dict = json.loads(response)
-            print('checkpoint 2')
-            func_name = response_dict['function']
-            print('checkpoint 3')
-            args = response_dict['args']
-            print('checkpoint 4')
+            # response_dict = json.loads(response)
+            # func_name = response_dict['function']
+            # args = response_dict['args']
+            func_name = generated_data['function']
+            args = generated_data['args']
             
             # Execute the chosen function
             if func_name in self.available_functions:
-                result = self.available_functions[func_name]['function'](**args)
+                result = self.available_functions[func_name]['function'](*args)
                 return {
                     'success': True,
                     'function_called': func_name,
