@@ -1,2 +1,4 @@
 torch
 transformers
+huggingface_hub
+jsonformer
