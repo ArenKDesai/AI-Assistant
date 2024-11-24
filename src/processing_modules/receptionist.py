@@ -7,7 +7,7 @@ import sys
 from jsonformer import Jsonformer
 
 class FunctionCallingLLM:
-    def __init__(self, model_name="google/gemma-2-2b-it"):
+    def __init__(self, model_name="meta-llama/Llama-3.2-3B-Instruct"):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
         self.available_functions = {}
