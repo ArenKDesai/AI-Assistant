@@ -32,6 +32,9 @@ class FunctionCallingLLM:
             context += f"Description: {info['metadata']['description']}\n"
             context += f"Parameters: {info['metadata']['parameters']}\n\n"
         return context
+
+    def test_query(self, request):
+        return f"Your request was:\n{request}\nand the current functions are: {self.available_functions}"
         
     def process_prompt(self, user_prompt):
         """Process user prompt and decide which function to call."""
@@ -39,7 +42,27 @@ class FunctionCallingLLM:
         full_prompt = (
             self.generate_function_context() + 
             "\nUser request: " + user_prompt + 
-            "\nResponse format: {'function': 'function_name', 'args': [args_array]}"
+            "\nResponse format: {'function': 'function_name', 'args': 'comma-delimited string array of arguments'}" + 
+            """
+
+Example:
+
+Function: example_function
+Description: This isn't a real function, but does describe what one may look like. 
+Parameters: OrderedDict({'argument_one': <Parameter "argument_one: int">, 'arg2': <Parameter "arg2: float">, 'ParameterThree': <Parameter "ParameterThree:: str">})
+
+output:
+{'function': 'example_function', 'args': '32,12.95,example string'}
+
+Example:
+
+Function: example_function
+Description: This isn't a real function, but does describe what one may look like. 
+Parameters: OrderedDict({'test': <Parameter "test: bool">})
+
+output:
+{'function': 'example_function', 'args': 'True'}
+            """
         )
         
         # Generate response from model
@@ -50,18 +73,25 @@ class FunctionCallingLLM:
         #     pad_token_id=self.tokenizer.eos_token_id
         # )
         # response = self.tokenizer.decode(outputs[0])
-        # clean_response = response[len(full_prompt):].lstrip()
-        
         json_schema = {
             "type": "object",
             "properties": {
                 "function": {"type": "string"},
-                "args": {
-                    "type": "array",
-                    "items": {"type": "string"}
-                }
-            }
+                    "args": {"type": "string"}
+            },
+            "required": ["function", "args"]
         }
+        
+       # json_schema = {
+       #      "type": "object",
+       #      "properties": {
+       #          "function": {"type": "string"},
+       #          "args": {
+       #              "type": "array",
+       #              "items": {"type": "string"}
+       #          }
+       #      }
+       #  }
         jsonformer = Jsonformer(self.model, self.tokenizer, json_schema, full_prompt)
         generated_data = jsonformer()
 
@@ -77,7 +107,7 @@ class FunctionCallingLLM:
             # func_name = response_dict['function']
             # args = response_dict['args']
             func_name = generated_data['function']
-            args = generated_data['args']
+            args = generated_data['args'].split(',')
             
             # Execute the chosen function
             if func_name in self.available_functions:
@@ -104,6 +134,8 @@ def example_usage():
     # Define some sample functions
     def calculate_price(quantity: int, price: float):
         """Calculate total price including 10% tax."""
+        quantity = int(quantity)
+        price = float(price)
         return quantity * price * 1.1
     
     def format_address(street: str, city: str, country: str):
