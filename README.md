@@ -31,6 +31,7 @@ ai_assistant/
 │   └── app.py
 ├── tests/
 │   └── test_bot.py
+├── server/
 ├── requirements.txt
 └── README.md
 ```

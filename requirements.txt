@@ -1,2 +1,6 @@
-telethon 
+grpcio-tools==1.66.1 
+grpcio==1.66.1 
+protobuf==5.27.2
+telethon
+logging
 python-dotenv
